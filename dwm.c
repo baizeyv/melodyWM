@@ -736,7 +736,7 @@ dirtomon(int dir)
 void
 drawbar(Monitor *m)
 {
-	int x, w, tw = 0;
+	int x, w, tw = 0, modew;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
@@ -771,6 +771,17 @@ drawbar(Monitor *m)
 	w = TEXTW(m->ltsymbol);
 	drw_setscheme(drw, scheme[SchemeNorm]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+
+	/* keymode */
+	if(keymode == ModeCommand) {
+		modew = TEXTW(commandchar);
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		x = drw_text(drw, x, 0, modew, bh, lrpad / 2, commandchar, 0);
+	} else {
+		modew = TEXTW(insertchar);
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		x = drw_text(drw, x, 0, modew, bh, lrpad / 2, insertchar, 0);
+	}
 
 	if ((w = m->ww - tw - x) > bh) {
 		if (m->sel) {
@@ -1587,6 +1598,7 @@ setinsertmode()
 {
 	keymode = ModeInsert;
 	clearcmd(NULL);
+	drawbars();
 	grabkeys();
 }
 
@@ -1597,6 +1609,7 @@ setkeymode(const Arg *arg)
 		return;
 	keymode = arg->ui;
 	clearcmd(NULL);
+	drawbars();
 	grabkeys();
 }
 
