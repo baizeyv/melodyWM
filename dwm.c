@@ -188,6 +188,7 @@ static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
+static void keyrelease(XEvent *e);
 static void keypresscmd(XEvent *e);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
@@ -251,8 +252,10 @@ static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void xinitvisual();
 static void zoom(const Arg *arg);
+static int deletesymbols(char s[], char c);
 
 /* variables */
+static char commandlist[1024] = "";
 static const char broken[] = "broken";
 static char stext[256];
 static int screen;
@@ -273,6 +276,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
+	[KeyRelease] = keyrelease,
 	[MappingNotify] = mappingnotify,
 	[MapRequest] = maprequest,
 	[MotionNotify] = motionnotify,
@@ -548,6 +552,8 @@ clearcmd(const Arg *arg)
 		cmdkeysym[i] = 0;
 		cmdmod[i] = 0;
 	}
+	memset(commandlist, 0, sizeof(commandlist));
+	drawbars();
 }
 
 void
@@ -736,7 +742,7 @@ dirtomon(int dir)
 void
 drawbar(Monitor *m)
 {
-	int x, w, tw = 0, modew;
+	int x, w, tw = 0, modew, keysw;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
@@ -781,6 +787,12 @@ drawbar(Monitor *m)
 		modew = TEXTW(insertchar);
 		drw_setscheme(drw, scheme[SchemeNorm]);
 		x = drw_text(drw, x, 0, modew, bh, lrpad / 2, insertchar, 0);
+	}
+	/* keys */
+	if(strlen(commandlist) > 0) {
+		keysw = TEXTW(commandlist);
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		x = drw_text(drw, x, 0, keysw, bh, lrpad / 2, commandlist, 0);
 	}
 
 	if ((w = m->ww - tw - x) > bh) {
@@ -1063,6 +1075,41 @@ keypress(XEvent *e)
 			keys[i].func(&(keys[i].arg));
 }
 
+int
+deletesymbols(char s[], char c){
+	// calc length of commandlist
+	int len = strlen(commandlist);
+	// init ptr backup
+	char ptr[len];
+	memset(ptr, 0, sizeof(ptr));
+
+	char string[len];
+	char *p1, c1=c;
+	strcpy(string, s);
+	p1 = strrchr(string, c1);
+	int flag = -1;
+	if(p1) {
+		flag = p1 - string;
+	}
+	if(flag != -1 && flag == len - 1) {
+		strncpy(ptr, s, len - 1);
+		strcpy(s, ptr);	
+		return 1;
+	}
+	return -1;
+}
+
+void
+keyrelease(XEvent *e)
+{
+	if(deletesymbols(commandlist, '#') == 1 ||
+		deletesymbols(commandlist, '^') == 1 ||
+		deletesymbols(commandlist, '+') == 1 ||
+		deletesymbols(commandlist, '!') == 1) {
+		drawbars();
+	}
+}
+
 void
 keypresscmd(XEvent *e) {
 	unsigned int i, j;
@@ -1072,6 +1119,45 @@ keypresscmd(XEvent *e) {
 
 	ev = &e->xkey;
 	keysym = XKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0);
+
+	if(strcmp(XKeysymToString(keysym), "Shift_L") == 0 || strcmp(XKeysymToString(keysym), "Shift_R") == 0) {
+		char tmp[1] = "+";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "Control_L") == 0 || strcmp(XKeysymToString(keysym), "Control_R") == 0) {
+		char tmp[1] = "^";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "Super_L") == 0 || strcmp(XKeysymToString(keysym), "Super_R") == 0) {
+		char tmp[1] = "#";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "Alt_L") == 0 || strcmp(XKeysymToString(keysym), "Alt_R") == 0) {
+		char tmp[1] = "!";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "semicolon") == 0) {
+		char tmp[1] = ";";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "equal") == 0) {
+		char tmp[1] = "=";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "minus") == 0) {
+		char tmp[1] = "-";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "backslash") == 0) {
+		char tmp[1] = "\\";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "Tab") == 0) {
+		char tmp[1] = ">";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "BackSpace") == 0) {
+		char tmp[1] = "<";
+		strcat(commandlist, tmp);
+	} else if (strcmp(XKeysymToString(keysym), "space") == 0) {
+		char tmp[1] = "_";
+		strcat(commandlist, tmp);
+	} else {
+		strcat(commandlist, XKeysymToString(keysym));
+	}
+	drawbars();
+
 	if (XK_Shift_L <= keysym && keysym <= XK_Hyper_R) {
 		return;
 	}
