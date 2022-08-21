@@ -88,15 +88,15 @@ static const Key keys[] = {
 
 static Command commands[] = {
 	/* modifier (4 keys)         keysyms (4 keys)         function        argument */
-	{ {0,           0, 0, 0},    { XK_p,      0, 0, 0},   spawn,          {.v = dmenucmd } },
+	{ {0,           0, 0, 0},    { XK_semicolon,      0, 0, 0},   spawn,          {.v = dmenucmd } },
 	{ {ShiftMask,   0, 0, 0},    { XK_Return, 0, 0, 0},   spawn,          {.v = termcmd } },
 	{ {0,           0, 0, 0},    { XK_b,      0, 0, 0},   togglebar,      {0} },
-	{ {0,           0, 0, 0},    { XK_j,      0, 0, 0},   focusstack,     {.i = +1 } },
-	{ {0,           0, 0, 0},    { XK_k,      0, 0, 0},   focusstack,     {.i = -1 } },
+	{ {0,           0, 0, 0},    { XK_e,      0, 0, 0},   focusstack,     {.i = +1 } },
+	{ {0,           0, 0, 0},    { XK_u,      0, 0, 0},   focusstack,     {.i = -1 } },
 	{ {0,           0, 0, 0},    { XK_i,      0, 0, 0},   incnmaster,     {.i = +1 } },
 	{ {0,           0, 0, 0},    { XK_d,      0, 0, 0},   incnmaster,     {.i = -1 } },
-	{ {0,           0, 0, 0},    { XK_h,      0, 0, 0},   setmfact,       {.f = -0.05} },
-	{ {0,           0, 0, 0},    { XK_l,      0, 0, 0},   setmfact,       {.f = +0.05} },
+	{ {MODKEY,           0, 0, 0},    { XK_n,      0, 0, 0},   setmfact,       {.f = -0.05} },
+	{ {MODKEY,           0, 0, 0},    { XK_i,      0, 0, 0},   setmfact,       {.f = +0.05} },
 	{ {0,           0, 0, 0},    { XK_Return, 0, 0, 0},   zoom,           {0} },
 	{ {ControlMask, 0, 0, 0},    { XK_i,      0, 0, 0},   view,           {0} },
 	{ {0,   0, 0, 0},    { XK_c,      XK_c, 0, 0},   killclient,     {0} },
@@ -111,6 +111,8 @@ static Command commands[] = {
 	{ {0,           0, 0, 0},    { XK_period, 0, 0, 0},   focusmon,       {.i = +1 } },
 	{ {ShiftMask,   0, 0, 0},    { XK_comma,  0, 0, 0},   tagmon,         {.i = -1 } },
 	{ {ShiftMask,   0, 0, 0},    { XK_period, 0, 0, 0},   tagmon,         {.i = +1 } },
+	{ {0,   0, 0, 0},    { XK_q,      XK_q, 0, 0},   quit,           {0} },
+	{ {0,   0, 0, 0},    { XK_q,      XK_r, 0, 0},   quit,           {1} },
 	TAGKEYS(XK_1, 0)
 	TAGKEYS(XK_2, 1)
 	TAGKEYS(XK_3, 2)
@@ -120,8 +122,6 @@ static Command commands[] = {
 	TAGKEYS(XK_7, 6)
 	TAGKEYS(XK_8, 7)
 	TAGKEYS(XK_9, 8)
-	{ {0,   0, 0, 0},    { XK_q,      XK_q, 0, 0},   quit,           {0} },
-	{ {0,   0, 0, 0},    { XK_q,      XK_r, 0, 0},   quit,           {1} },
 };
 
 /* button definitions */
