@@ -14,6 +14,9 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;     /* 0 means no systray */
 static const int horizpadbar        = 5;        /* horizontal padding for statusbar */
 static const int vertpadbar         = 15;        /* vertical padding for statusbar */
+static const double activeopacity   = 0.8f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
+static const double inactiveopacity = 0.6f;   /* Window opacity when it's inactive (0 <= opacity <= 1) */
+static       Bool bUseOpacity       = True;     /* Starts with opacity on any unfocused windows */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
@@ -96,6 +99,7 @@ static Command commands[] = {
 	{ {0,           0, 0, 0},    { XK_p,      0, 0, 0},   spawn,          {.v = dmenucmd } },
 	{ {ShiftMask,   0, 0, 0},    { XK_Return, 0, 0, 0},   spawn,          {.v = termcmd } },
 	{ {0,           0, 0, 0},    { XK_b,      0, 0, 0},   togglebar,      {0} },
+	{ {0,           0, 0, 0},    { XK_y,      0, 0, 0},   toggleopacity,      {0} },
 	{ {0,           0, 0, 0},    { XK_j,      0, 0, 0},   focusstack,     {.i = +1 } },
 	{ {0,           0, 0, 0},    { XK_k,      0, 0, 0},   focusstack,     {.i = -1 } },
 	{ {0,           0, 0, 0},    { XK_i,      0, 0, 0},   incnmaster,     {.i = +1 } },
