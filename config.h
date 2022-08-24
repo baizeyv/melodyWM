@@ -109,6 +109,7 @@ static Command commands[] = {
 	{ {0,           0, 0, 0},    { XK_Return, 0, 0, 0},   zoom,           {0} },
 	{ {ControlMask, 0, 0, 0},    { XK_i,      0, 0, 0},   view,           {0} },
 	{ {0,   0, 0, 0},    { XK_c,      XK_c, 0, 0},   killclient,     {0} },
+	{ {0,   0, 0, 0},    { XK_c,      XK_x, 0, 0},   killunsel,     {0} },
 	{ {0,           0, 0, 0},    { XK_t,      0, 0, 0},   setlayout,      {.v = &layouts[0]} },
 	{ {0,           0, 0, 0},    { XK_f,      0, 0, 0},   setlayout,      {.v = &layouts[1]} },
 	{ {0,           0, 0, 0},    { XK_m,      0, 0, 0},   setlayout,      {.v = &layouts[2]} },
