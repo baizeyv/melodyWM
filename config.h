@@ -51,9 +51,10 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class      instance    title       tags mask     isfloating   monitor    scratch key */
+	{ "Gimp",     NULL,       NULL,       0,            1,           -1,        0  },
+	{ "firefox",  NULL,       NULL,       1 << 8,       0,           -1,        0  },
+	{ NULL,       NULL,   "scratchpad",   0,            1,           -1,       's' },
 };
 
 /* layout(s) */
@@ -84,6 +85,9 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
+
+/*First arg only serves to match against key in rules*/
+static const char *scratchpadcmd[] = {"s", "st", "-t", "scratchpad", NULL}; 
 
 static Key cmdkeys[] = {
 	/* modifier                    keys                     function         argument */
@@ -124,9 +128,10 @@ static Command commands[] = {
 	{ {0,           0, 0, 0},    { XK_period, 0, 0, 0},   focusmon,       {.i = +1 } },
 	{ {ShiftMask,   0, 0, 0},    { XK_comma,  0, 0, 0},   tagmon,         {.i = -1 } },
 	{ {ShiftMask,   0, 0, 0},    { XK_period, 0, 0, 0},   tagmon,         {.i = +1 } },
-	{ {0,           0, 0, 0},    { XK_equal,  0, 0, 0},   scratchpad_show,       {.i = -1 } },
-	{ {0,           0, 0, 0},    { XK_minus,  0, 0, 0},   scratchpad_hide,       {.i = -1 } },
-	{ {ShiftMask,           0, 0, 0},    { XK_minus,  0, 0, 0},   scratchpad_remove,       {.i = -1 } },
+	{ {0,           0, 0, 0},    { XK_equal,  0, 0, 0},   scratchpad_show,       {0} },
+	{ {0,           0, 0, 0},    { XK_minus,  0, 0, 0},   scratchpad_hide,       {0} },
+	{ {0,           0, 0, 0},    { XK_grave,  0, 0, 0},   togglescratch,       {.v = scratchpadcmd } },
+	{ {ShiftMask,           0, 0, 0},    { XK_minus,  0, 0, 0},   scratchpad_remove,       {0} },
 	TAGKEYS(XK_1, 0)
 	TAGKEYS(XK_2, 1)
 	TAGKEYS(XK_3, 2)
