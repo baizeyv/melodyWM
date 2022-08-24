@@ -124,6 +124,9 @@ static Command commands[] = {
 	{ {0,           0, 0, 0},    { XK_period, 0, 0, 0},   focusmon,       {.i = +1 } },
 	{ {ShiftMask,   0, 0, 0},    { XK_comma,  0, 0, 0},   tagmon,         {.i = -1 } },
 	{ {ShiftMask,   0, 0, 0},    { XK_period, 0, 0, 0},   tagmon,         {.i = +1 } },
+	{ {0,           0, 0, 0},    { XK_equal,  0, 0, 0},   scratchpad_show,       {.i = -1 } },
+	{ {0,           0, 0, 0},    { XK_minus,  0, 0, 0},   scratchpad_hide,       {.i = -1 } },
+	{ {ShiftMask,           0, 0, 0},    { XK_minus,  0, 0, 0},   scratchpad_remove,       {.i = -1 } },
 	TAGKEYS(XK_1, 0)
 	TAGKEYS(XK_2, 1)
 	TAGKEYS(XK_3, 2)
