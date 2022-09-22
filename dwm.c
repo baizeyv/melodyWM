@@ -2293,9 +2293,11 @@ sigterm(int unused)
 void
 spawn(const Arg *arg)
 {
-	setinsertmode();
-	if (arg->v == dmenucmd)
+	// setinsertmode();
+	if (arg->v == dmenucmd) {
+		setinsertmode();
 		dmenumon[0] = '0' + selmon->num;
+	}
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
